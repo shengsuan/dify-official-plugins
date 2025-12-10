@@ -1,4 +1,18 @@
 name: Pre Check Plugin
+on:
+  workflow_dispatch:  # 添加此行以支持手动触发
+  pull_request:
+    types: [opened, synchronize, ready_for_review, review_requested, edited]
+    branches:
+      - main
+      - dev
+    paths-ignore:
+      - "migrations/**"
+      - ".scripts/**"
+      - ".github/**"
+      - ".gitignore"
+      - "README.md"
+      - "LICENSE"
 
 on:
   pull_request:
