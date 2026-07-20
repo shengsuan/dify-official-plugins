@@ -1,72 +1,434 @@
-![bar](.assets/bar.png)
 
-<p align="center">
-  <a href="https://cloud.dify.ai">Dify Cloud</a> ·
-  <a href="https://docs.dify.ai/getting-started/install-self-hosted">Self-hosting</a> ·
-  <a href="https://docs.dify.ai">Documentation</a> ·
-  <a href="https://udify.app/chat/22L1zSxg6yW1cWQg">Enterprise inquiry</a>
-</p>
-<p align="center">
-    <a href="https://dify.ai" target="_blank">
-        <img alt="Static Badge" src="https://img.shields.io/badge/Product-F04438"></a>
-    <a href="https://dify.ai/pricing" target="_blank">
-        <img alt="Static Badge" src="https://img.shields.io/badge/free-pricing?logo=free&color=%20%23155EEF&label=pricing&labelColor=%20%23528bff"></a>
-    <a href="https://discord.gg/FngNHpbcY7" target="_blank">
-        <img src="https://img.shields.io/discord/1082486657678311454?logo=discord&labelColor=%20%235462eb&logoColor=%20%23f5f5f5&color=%20%235462eb"
-            alt="chat on Discord"></a>
-    <a href="https://reddit.com/r/difyai" target="_blank">  
-        <img src="https://img.shields.io/reddit/subreddit-subscribers/difyai?style=plastic&logo=reddit&label=r%2Fdifyai&labelColor=white"
-            alt="join Reddit"></a>
-    <a href="https://twitter.com/intent/follow?screen_name=dify_ai" target="_blank">
-        <img src="https://img.shields.io/twitter/follow/dify_ai?logo=X&color=%20%23f5f5f5"
-            alt="follow on X(Twitter)"></a>
-    <a href="https://www.linkedin.com/company/langgenius/" target="_blank">
-        <img src="https://custom-icon-badges.demolab.com/badge/LinkedIn-0A66C2?logo=linkedin-white&logoColor=fff"
-            alt="follow on LinkedIn"></a>
-    <a href="https://hub.docker.com/u/langgenius" target="_blank">
-        <img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/langgenius/dify-web?labelColor=%20%23FDB062&color=%20%23f79009"></a>
-    <a href="https://github.com/langgenius/dify/graphs/commit-activity" target="_blank">
-        <img alt="Commits last month" src="https://img.shields.io/github/commit-activity/m/langgenius/dify?labelColor=%20%2332b583&color=%20%2312b76a"></a>
-    <a href="https://github.com/langgenius/dify/" target="_blank">
-        <img alt="Issues closed" src="https://img.shields.io/github/issues-search?query=repo%3Alanggenius%2Fdify%20is%3Aclosed&label=issues%20closed&labelColor=%20%237d89b0&color=%20%235d6b98"></a>
-    <a href="https://github.com/langgenius/dify/discussions/" target="_blank">
-        <img alt="Discussion posts" src="https://img.shields.io/github/discussions/langgenius/dify?labelColor=%20%239b8afb&color=%20%237a5af8"></a>
-</p>
+# Dify 胜算云插件使用指南
 
-### Introduction
+> Dify 胜算云插件，是为Dify提供胜算云大语言模型，嵌入模型和TTS模型的开源扩展。 本文介绍如何安装、调试和使用胜算云维护的 Dify 官方插件仓库。
 
-[Dify](https://dify.ai/) is an open-source platform for developing LLM-powered AI applications, designed to help developers and businesses efficiently build, deploy, and manage AI-driven solutions. With Dify, users can easily create and test complex AI workflows, integrate a wide range of advanced models and tools, and optimize their performance in real-world applications. The platform offers an intuitive interface, supporting RAG (Retrieval-Augmented Generation) pipelines, intelligent agent capabilities, and robust model management, enabling developers to seamlessly transition from prototype to production. 
+适用于：
 
-Dify's models and tools were originally stored in the [main Dify repository](https://github.com/langgenius/dify). However, starting from Dify v1.0.0 (February 2025), all models and tools have been migrated into plugins and are now stored in this repository. All plugins in this repository will be uploaded to the [Dify Marketplace](https://marketplace.dify.ai/), where they will be maintained and updated by the official Dify team. The plugins in the Marketplace are available for all Dify users to explore and use.
+* Dify Cloud
+* Dify 社区版
+* Dify 企业版
 
-### Plugin Types
+插件仓库：
 
-#### Models
+* [shengsuan/dify-official-plugins](https://github.com/shengsuan/dify-official-plugins)
 
-Models transform AI model management in Dify. Now you can configure, update and use models as plugins across chatbots, agents, chatflows and workflows.
+官方插件开发文档：
 
-#### Tools
+* [Dify Plugin Documentation](https://docs.dify.ai/en/develop-plugin/publishing/marketplace-listing/release-overview)
 
-Tools add specialized capabilities to Dify apps. Enhance your agents and workflows with domain-specific features for data analysis, content translation, custom integrations and more.
+---
 
-#### Agent Strategies
+# 目录
 
-Agent Strategies provide reasoning strategies for the new [**Agent Nodes**](https://docs.dify.ai/guides/workflow/node/agent) in Dify chatflows / workflows, supporting autonomous tool selection and execution for multi-step reasoning. Create custom reasoning strategies like Chain-of-Thoughts, Tree-of-Thoughts, Function call and ReAct to enhance the problem-solving abilities of your chatflows / workflows.
+1. 插件仓库介绍
+2. 环境要求
+3. 方法一：从 GitHub 安装插件（推荐）
+4. 方法二：从本地集成包安装（.difypkg）
+5. 方法三：下载源码进行开发调试
+6. 调试插件
+7. 更新插件
+8. 常见问题 FAQ
 
-#### Extensions
+---
 
-Extensions facilitate external integrations through HTTP webhooks. Build custom APIs to handle complex workflows, process data, or connect with external services, making your applications more versatile and powerful.
+# 一、插件仓库介绍
 
-### Update
+Dify 从 **1.0** 开始，将原来内置的：
 
-In the future, all new official plugins developed by Dify will be updated and maintained in this repository.
+* Model Provider
+* Tool
+* Extension
+* Datasource
+* Trigger
+* Agent Strategy
 
-### Dependency Management
+全部改成插件形式。
 
-Python plugins should declare dependencies in `pyproject.toml` and commit the generated `uv.lock`. After changing dependencies, run `uv lock` and commit both files. Use `uv sync --frozen` from the plugin directory to reproduce the locked environment.
+官方插件已经迁移到独立仓库维护。
 
-During the migration from `requirements.txt`, legacy plugins without `uv.lock` may keep using `requirements.txt`. CI/CD uses `uv.lock` first and falls back to `requirements.txt` only when no lock file is present.
+胜算云同步维护了官方插件仓库，可以直接作为 GitHub 安装源。
 
-### Security disclosure
+例如：
 
-To protect your privacy, please avoid posting security issues on GitHub. Instead, send your questions to [security@dify.ai](mailto:security@dify.ai) and we will provide you with a more detailed answer.
+```
+https://github.com/shengsuan/dify-official-plugins
+```
+
+---
+
+# 二、环境要求
+
+建议版本
+
+| 软件     | 推荐版本 |
+| ------ | ---- |
+| Dify   | ≥1.0 |
+| Docker | 最新   |
+| Git    | 最新   |
+
+---
+
+# 三、方式一：GitHub 安装（推荐）
+
+这是最方便的方法。需要先等你你的Dify 账户，在控制面板选择：
+
+## 第一步
+
+打开
+
+```
+集成
+```
+
+点击
+
+```
+安装
+```
+
+选择
+
+```
+GitHub
+```
+
+（这里放第一张截图）
+
+---
+
+## 第二步
+
+输入仓库地址
+
+```
+https://github.com/shengsuan/dify-official-plugins
+```
+[选择要安装的版本](.assets/github.png)
+
+点击
+
+```
+下一步
+```
+[选择要安装的版本](.assets/github2.png)
+---
+
+## 第三步
+
+等待 Dify 拉取仓库。
+
+拉取完成以后即可看到所有插件。
+
+包括：
+
+* 模型
+* Tool
+* Extension
+* Datasource
+* Trigger
+* Agent Strategy
+
+---
+
+## 第四步
+
+点击
+
+```
+Install
+```
+
+安装需要的插件即可。
+按装后，需要先配置你的 胜算云API Key 
+```
+集成 > 模型供应商 > 胜算云 > 添加 API 密钥
+```
+[setting](.assets/setting.png)
+
+[输入你的 API Key](https://console.shengsuanyun.com/user/keys)
+配置完成后可以直接在：
+
+* Workflow
+* Chatflow
+* Agent
+
+中使用。
+
+---
+
+# 四、方式二：本地安装 .difypkg
+
+如果已经下载了插件包，也可以直接导入。
+
+例如：
+
+```
+openai.difypkg
+```
+
+进入
+
+```
+集成
+
+↓
+
+安装
+
+↓
+
+本地集成包
+```
+
+选择：
+
+```
+xxx.difypkg
+```
+
+点击安装。
+
+官方说明支持直接上传 `.difypkg` 文件进行安装。
+
+---
+
+## 如何制作 .difypkg
+
+安装 CLI
+
+```
+dify version
+```
+
+进入插件目录：
+
+```
+dify plugin package .
+```
+
+生成：
+
+```
+plugin-name.difypkg
+```
+
+然后即可分享给其他人安装。
+
+---
+
+# 五、方式三：下载源码调试
+
+如果需要开发插件，建议直接 Clone 仓库。
+
+```
+git clone https://github.com/shengsuan/dify-official-plugins.git
+```
+
+进入插件目录：
+
+```
+extensions/
+
+tools/
+
+models/
+
+datasources/
+```
+
+每个目录就是一个插件。
+
+例如：
+
+```
+tools/
+
+    google
+
+    github
+
+    jina
+
+    ...
+```
+
+官方插件仓库中包含：
+
+* Models
+* Tools
+* Datasources
+* Extensions
+* Triggers
+* Agent Strategies 等插件源码。([GitHub][1])
+
+---
+
+# 六、配置开发环境
+
+安装 Dify CLI
+
+Mac
+
+```
+brew tap langgenius/dify
+
+brew install dify
+```
+
+Linux / Windows
+
+下载官方 CLI。
+
+官方要求：
+
+* Python 3.12
+* Dify CLI([Dify Docs][3])
+
+---
+
+# 七、本地调试插件
+
+进入插件目录：
+
+```
+cd tools/github
+```
+
+安装依赖：
+
+```
+uv sync
+```
+
+或者
+
+```
+pip install -r requirements.txt
+```
+
+启动调试：
+
+```
+dify plugin daemon
+```
+
+或者
+
+```
+dify plugin debug
+```
+
+根据插件类型进行远程调试。
+
+调试完成以后：
+
+```
+dify plugin package .
+```
+
+生成新的
+
+```
+.difypkg
+```
+
+重新安装即可。[或选择现在调试](https://docs.dify.ai/zh/develop-plugin/features-and-specs/plugin-types/remote-debug-a-plugin)
+
+[debug](.assets/debug)
+---
+
+# 八、插件目录结构
+
+典型插件结构：
+
+```
+plugin/
+
+├── manifest.yaml
+├── provider.py
+├── tools/
+├── README.md
+├── pyproject.toml
+└── uv.lock
+```
+
+其中：
+
+```
+manifest.yaml
+```
+
+定义：
+
+* 名称
+* 作者
+* 图标
+* 权限
+* 入口
+
+---
+
+# 九、插件更新
+
+GitHub 安装：
+
+点击：
+
+```
+更新
+```
+
+即可同步仓库最新版本。
+
+本地安装：
+
+重新生成：
+
+```
+.difypkg
+```
+
+再次上传即可。
+
+---
+
+# 十、常见问题
+
+## GitHub 无法安装？
+
+检查：
+
+* GitHub 是否可以访问
+* 仓库地址是否正确
+* Dify 是否支持 GitHub 插件安装
+
+---
+
+## 插件没有显示？
+
+检查：
+
+* manifest.yaml
+* 插件版本
+* Dify 版本
+
+---
+
+## 本地安装失败？
+
+检查：
+
+* 是否为 `.difypkg`
+* 是否打包成功
+* 是否开启第三方插件签名验证（自托管默认会校验签名）
+
+---
+
+# 参考资料
+
+* [胜算云插件仓库](https://github.com/shengsuan/dify-official-plugins?utm_source=chatgpt.com)
+* [Dify 官方插件仓库](https://github.com/langgenius/dify-official-plugins?utm_source=chatgpt.com)
+* [Dify 插件发布文档](https://docs.dify.ai/en/develop-plugin/publishing/marketplace-listing/release-overview?utm_source=chatgpt.com)
+* [Dify CLI 文档](https://docs.dify.ai/en/develop-plugin/getting-started/cli?utm_source=chatgpt.com)
+* [本地插件安装文档](https://docs.dify.ai/en/develop-plugin/publishing/marketplace-listing/release-by-file?utm_source=chatgpt.com)
