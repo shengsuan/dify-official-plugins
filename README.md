@@ -104,14 +104,14 @@ GitHub
 ```
 https://github.com/shengsuan/dify-official-plugins
 ```
-[选择要安装的版本](.assets/github.png)
+[选择要安装的版本](https://raw.githubusercontent.com/shengsuan/dify-official-plugins/pub/.assets/github.png)
 
 点击
 
 ```
 下一步
 ```
-[选择要安装的版本](.assets/github2.png)
+[选择要安装的版本](https://raw.githubusercontent.com/shengsuan/dify-official-plugins/pub/.assets/github2.png)
 ---
 
 ## 第三步
@@ -144,7 +144,7 @@ Install
 ```
 集成 > 模型供应商 > 胜算云 > 添加 API 密钥
 ```
-[setting](.assets/setting.png)
+[setting](https://raw.githubusercontent.com/shengsuan/dify-official-plugins/pub/.assets/setting.png)
 
 [输入你的 API Key](https://console.shengsuanyun.com/user/keys)
 配置完成后可以直接在：
@@ -335,7 +335,7 @@ dify plugin package .
 
 重新安装即可。[或选择现在调试](https://docs.dify.ai/zh/develop-plugin/features-and-specs/plugin-types/remote-debug-a-plugin)
 
-[debug](.assets/debug)
+[debug](https://raw.githubusercontent.com/shengsuan/dify-official-plugins/pub/.assets/debug.png)
 ---
 
 # 八、插件目录结构
