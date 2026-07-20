@@ -92,9 +92,6 @@ https://github.com/shengsuan/dify-official-plugins
 ```
 GitHub
 ```
-
-（这里放第一张截图）
-
 ---
 
 ## 第二步
